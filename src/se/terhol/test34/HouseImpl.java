@@ -17,7 +17,7 @@ import java.util.Set;
  * @author Tereza Holm
  */
 public class HouseImpl implements House {
-    Map<Room, Set<Room>> myHouse = new HashMap<>();
+    Map<Room, Set<Room>> house = new HashMap<>();
     Map<Person, Room> currentHouse = new HashMap<>();
 
     public HouseImpl(String input) throws IOException {
@@ -49,9 +49,9 @@ public class HouseImpl implements House {
     @Override
     public void savePlan(OutputStream os) {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os))) {
-            for (Room room : myHouse.keySet()) {
-                for (Room roomNext : myHouse.get(room)) {
-                    writer.write(room.toString() + ":" + roomNext.toString());
+            for (Room room : house.keySet()) {
+                for (Room roomNext : house.get(room)) {
+                    writer.write(String.format("%1$s:%2$s", room.toString(), roomNext.toString()));
                     writer.newLine();
                 }
             }
@@ -71,22 +71,22 @@ public class HouseImpl implements House {
             int spaceInt = line.indexOf(":");
             Room room1 = new Room(line.substring(0, spaceInt));
             Room room2 = new Room(line.substring(spaceInt + 1));
-
-            if (!myHouse.containsKey(room1)) {
-                myHouse.put(room1, new HashSet<>());
-            }
-            myHouse.get(room1).add(room2);
-            if (!myHouse.containsKey(room2)) {
-                myHouse.put(room2, new HashSet<>());
-            }
-            myHouse.get(room2).add(room1);
+            this.addRom(room1, room2);
+            this.addRom(room2, room1);
         }
     }
 
     private boolean isNext(Room room1, Room room2) {
-        if (!myHouse.containsKey(room1) || !myHouse.containsKey(room2)) {
+        if (!house.containsKey(room1) || !house.containsKey(room2)) {
             throw new IllegalArgumentException();
         }
-        return myHouse.get(room1).contains(room2);
+        return house.get(room1).contains(room2);
+    }
+
+    private void addRom(Room room1, Room room2) {
+        if (!house.containsKey(room1)) {
+            house.put(room1, new HashSet<>());
+        }
+        house.get(room1).add(room2);
     }
 }
