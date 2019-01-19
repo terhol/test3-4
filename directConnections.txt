@@ -1,0 +1,7 @@
+entrance hall:grand salon
+connecting gallery:grand salon
+entrance hall:connecting gallery
+connecting gallery:ballroom
+connecting gallery:lavatory
+salon bordeaux:workroom
+lavatory:workroom
